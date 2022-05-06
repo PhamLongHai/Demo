@@ -1,0 +1,34 @@
+public static string ConnectString = @"Data Source=HOANGVINH;Initial Catalog=QLSV;Integrated Security=True";
+        //-- đi xây dựng Func để select dữ liệu
+        public static DataTable SelectDB(string sql)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectString))
+            {
+                using (SqlDataAdapter dad = new SqlDataAdapter(sql, con))
+                {
+                    using (DataSet dst = new DataSet())
+                    {
+                        dad.Fill(dst);
+                        return dst.Tables[0];  // DataTable
+                    }
+                }
+            }
+        }
+        // update - insert - delete
+        public static void UpInDelDB(string sql)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectString))
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                con.Open();
+                using (SqlCommand com = new SqlCommand(sql, con))
+                {
+                    com.CommandType = CommandType.Text;
+                    com.ExecuteNonQuery();
+                    com.Dispose();
+                }
+                con.Close();
+                con.Dispose();
+            }
+        }
